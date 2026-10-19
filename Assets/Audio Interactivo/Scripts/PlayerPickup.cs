@@ -6,7 +6,7 @@ public class PlayerPickup : MonoBehaviour
     [Header("Configuración del Raycast")]
     [SerializeField] private float reachDistance = 2.5f;
     [SerializeField] private LayerMask interactionMask = ~0;
-    [SerializeField] private Camera playerCamera; // Referencia a la cámara para apuntar
+    [SerializeField] private Camera playerCamera;
 
     [Header("Punto de Agarre")]
     [SerializeField] private Transform holdPoint;
@@ -27,7 +27,6 @@ public class PlayerPickup : MonoBehaviour
 
     private void Awake()
     {
-        // Si no se asignó la cámara a mano, la busca en los hijos
         if (playerCamera == null)
         {
             playerCamera = GetComponentInChildren<Camera>();
@@ -56,7 +55,6 @@ public class PlayerPickup : MonoBehaviour
 
     private void HandleInteraction()
     {
-        // El rayo sale desde la posición de la cámara y en la dirección hacia donde estás mirando
         Vector3 rayOrigin = playerCamera != null ? playerCamera.transform.position : transform.position;
         Vector3 rayDirection = playerCamera != null ? playerCamera.transform.forward : transform.forward;
 
@@ -72,7 +70,15 @@ public class PlayerPickup : MonoBehaviour
                 return;
             }
 
-            // 2. ¿Mirando a la sartén?
+            // 2. ¿Mirando a la puerta? (Busca el componente en el objeto o en su padre PivotPuerta)
+            Door door = hit.collider.GetComponentInParent<Door>();
+            if (door != null)
+            {
+                door.ToggleDoor();
+                return;
+            }
+
+            // 3. ¿Mirando a la sartén?
             if (heldRb == null && hit.collider.CompareTag("Grabbable"))
             {
                 if (stove != null && !stove.IsLit)
@@ -86,7 +92,7 @@ public class PlayerPickup : MonoBehaviour
             }
         }
 
-        // 3. Soltar si tenemos algo
+        // 4. Soltar si tenemos algo en la mano
         if (heldRb != null)
         {
             Drop();

@@ -1,5 +1,32 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!244 &-6999907006881162817
+AudioMixerEffectController:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_EffectID: da37a4c196bea294f8066851908b2589
+  m_EffectName: Attenuation
+  m_MixLevel: aa0de56ec07c95d49881c0d89e531830
+  m_Parameters: []
+  m_SendTarget: {fileID: 0}
+  m_EnableWetMix: 0
+  m_Bypass: 0
+--- !u!245 &-5904076992173646250
+AudioMixerSnapshotController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Alerta
+  m_AudioMixer: {fileID: 24100000}
+  m_SnapshotID: 437ac9139738cee4391dbbfe1734cb64
+  m_FloatValues:
+    335a8c481b4319a4eaf619993e8e2538: 0
+    b496b2cf38c075244b9a7f5c4ea5bbd4: -80
+  m_TransitionOverrides: {}
 --- !u!243 &-5864584070375850494
 AudioMixerGroupController:
   m_ObjectHideFlags: 0
@@ -47,6 +74,25 @@ AudioMixerEffectController:
   m_SendTarget: {fileID: 0}
   m_EnableWetMix: 0
   m_Bypass: 0
+--- !u!243 &-2593459813744163418
+AudioMixerGroupController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: "M\xFAsicaCalma"
+  m_AudioMixer: {fileID: 24100000}
+  m_GroupID: 0e1d75199572fcf4a8690e8dc7e18a6b
+  m_Children: []
+  m_Volume: b496b2cf38c075244b9a7f5c4ea5bbd4
+  m_Pitch: 9887c6e61e4b99a4fa1be60ec5a36c7b
+  m_Send: 00000000000000000000000000000000
+  m_Effects:
+  - {fileID: -6999907006881162817}
+  m_UserColorIndex: 0
+  m_Mute: 0
+  m_Solo: 0
+  m_BypassEffects: 0
 --- !u!244 &-1999223986733128756
 AudioMixerEffectController:
   m_ObjectHideFlags: 3
@@ -91,6 +137,8 @@ AudioMixerController:
   m_MasterGroup: {fileID: 24300002}
   m_Snapshots:
   - {fileID: 24500006}
+  - {fileID: 6157297301523911979}
+  - {fileID: -5904076992173646250}
   m_StartSnapshot: {fileID: 24500006}
   m_SuspendThreshold: -80
   m_EnableSuspend: 1
@@ -103,6 +151,8 @@ AudioMixerController:
     - 941f312acb9d76b4b8bcc194cb69c094
     - 95c8803b103227f429a43a05868fe57b
     - c0cd9426eb1ac07418f99dc0669b8fbd
+    - 0e1d75199572fcf4a8690e8dc7e18a6b
+    - 7e447ca15d63bf44b88462ab0dd54f62
     name: View
   m_CurrentViewIndex: 0
   m_TargetSnapshot: {fileID: 24500006}
@@ -163,7 +213,9 @@ AudioMixerGroupController:
   m_Name: "M\xFAsica"
   m_AudioMixer: {fileID: 24100000}
   m_GroupID: 71b276eb84b65384ba64c6cea8bbe1f3
-  m_Children: []
+  m_Children:
+  - {fileID: -2593459813744163418}
+  - {fileID: 6203292695588711232}
   m_Volume: 37f3dc4648826604fa8df1e0a93cf261
   m_Pitch: 526c334dc37c053408f3b3ae335d1661
   m_Send: 00000000000000000000000000000000
@@ -192,6 +244,37 @@ AudioMixerGroupController:
   m_Mute: 0
   m_Solo: 0
   m_BypassEffects: 0
+--- !u!245 &6157297301523911979
+AudioMixerSnapshotController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Calma
+  m_AudioMixer: {fileID: 24100000}
+  m_SnapshotID: 1db0d192abc7a68469d26587bb237bbd
+  m_FloatValues:
+    335a8c481b4319a4eaf619993e8e2538: -80
+  m_TransitionOverrides: {}
+--- !u!243 &6203292695588711232
+AudioMixerGroupController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: "M\xFAsicaAlerta"
+  m_AudioMixer: {fileID: 24100000}
+  m_GroupID: 7e447ca15d63bf44b88462ab0dd54f62
+  m_Children: []
+  m_Volume: 335a8c481b4319a4eaf619993e8e2538
+  m_Pitch: 9c0e36f3a3b4c7d4b9caedb6ff2f68c2
+  m_Send: 00000000000000000000000000000000
+  m_Effects:
+  - {fileID: 7329973496869172133}
+  m_UserColorIndex: 0
+  m_Mute: 0
+  m_Solo: 0
+  m_BypassEffects: 0
 --- !u!244 &7225688327191597694
 AudioMixerEffectController:
   m_ObjectHideFlags: 3
@@ -202,6 +285,20 @@ AudioMixerEffectController:
   m_EffectID: 33dfc3fd6455e6f40a41324941b639f0
   m_EffectName: Attenuation
   m_MixLevel: 4a803f07bfab427429f34b0d32bef752
+  m_Parameters: []
+  m_SendTarget: {fileID: 0}
+  m_EnableWetMix: 0
+  m_Bypass: 0
+--- !u!244 &7329973496869172133
+AudioMixerEffectController:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_EffectID: d61c37eed638dcf43b4914219716eb8d
+  m_EffectName: Attenuation
+  m_MixLevel: 16b6c98e98caeff47aa02f9166af2333
   m_Parameters: []
   m_SendTarget: {fileID: 0}
   m_EnableWetMix: 0
