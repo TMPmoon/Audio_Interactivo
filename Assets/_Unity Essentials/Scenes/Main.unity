@@ -773,7 +773,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 5746663825082710103, guid: 215aa340f55c9624db93edb9edc83e0e,
     type: 2}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 2e832dbb2c7c9ba4e97fd3005fe850b7, type: 3}
+  m_Resource: {fileID: 8300000, guid: c2480eb51e4222c46877b0c399ea6e3a, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -873,8 +873,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StoveController
   panSnapPoint: {fileID: 21152021}
   stoveSfxAudioSource: {fileID: 942399299}
-  igniteStoveClip: {fileID: 8300000, guid: 76c66b3ae15685a45a334b0628d1edd1, type: 3}
-  placePanClip: {fileID: 8300000, guid: 76c66b3ae15685a45a334b0628d1edd1, type: 3}
+  igniteStoveClip: {fileID: 8300000, guid: c2480eb51e4222c46877b0c399ea6e3a, type: 3}
+  placePanClip: {fileID: 8300000, guid: 199fcbf6f48bbfb4d96dd77f85d4a017, type: 3}
   smallFireLoopSource: {fileID: 942399301}
   voiceAudioSource: {fileID: 0}
   placePanVoiceClip: {fileID: 0}
@@ -890,7 +890,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: -5864584070375850494, guid: 215aa340f55c9624db93edb9edc83e0e,
     type: 2}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 76c66b3ae15685a45a334b0628d1edd1, type: 3}
+  m_Resource: {fileID: 8300000, guid: 08db2785b8b26e94bb37809e99a84dfb, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

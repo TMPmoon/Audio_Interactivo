@@ -156,6 +156,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 1.5
   mouseSensitivity: 0.2
+  cameraTransform: {fileID: 0}
   moveAction:
     m_Name: Move
     m_Type: 0
