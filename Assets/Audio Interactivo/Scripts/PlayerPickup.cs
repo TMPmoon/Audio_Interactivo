@@ -4,18 +4,17 @@ using UnityEngine.InputSystem;
 public class PlayerPickup : MonoBehaviour
 {
     [Header("Configuración del Raycast")]
-    [Tooltip("Distancia máxima para alcanzar el objeto")]
     [SerializeField] private float reachDistance = 2.5f;
-    [Tooltip("Capas de objetos que se pueden agarrar")]
-    [SerializeField] private LayerMask pickupMask = ~0;
+    [SerializeField] private LayerMask interactionMask = ~0;
 
     [Header("Punto de Agarre")]
-    [Tooltip("Transform vacío hijo de la cámara donde se sostiene el objeto")]
     [SerializeField] private Transform holdPoint;
-    [Tooltip("Velocidad de suavizado para seguir el punto de agarre")]
-    [SerializeField] private float smoothSpeed = 15f;
+    [SerializeField] private float smoothSpeed = 18f;
 
-    [Header("Audio (Bloque C)")]
+    [Header("Referencia de la Hornalla")]
+    [SerializeField] private StoveController stove;
+
+    [Header("Audio (Bloque C - SFX)")]
     [SerializeField] private AudioSource pickupAudioSource;
     [SerializeField] private AudioClip pickupClip;
     [SerializeField] private AudioClip dropClip;
@@ -27,71 +26,84 @@ public class PlayerPickup : MonoBehaviour
 
     private void Update()
     {
-        // Detecta la tecla 'E' (compatible con New Input System y Legacy)
         bool interactPressed = (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
                                || Input.GetKeyDown(KeyCode.E);
 
         if (interactPressed)
         {
-            if (heldRb == null)
-            {
-                TryPickup();
-            }
-            else
-            {
-                Drop();
-            }
+            HandleInteraction();
         }
     }
 
     private void FixedUpdate()
     {
-        // Traslada el objeto suavemente hacia el punto de la mano
         if (heldRb != null && holdPoint != null)
         {
-            Vector3 targetPosition = holdPoint.position;
-            heldRb.MovePosition(Vector3.Lerp(heldRb.position, targetPosition, smoothSpeed * Time.fixedDeltaTime));
+            heldRb.MovePosition(Vector3.Lerp(heldRb.position, holdPoint.position, smoothSpeed * Time.fixedDeltaTime));
             heldRb.MoveRotation(Quaternion.Lerp(heldRb.rotation, holdPoint.rotation, smoothSpeed * Time.fixedDeltaTime));
         }
     }
 
-    private void TryPickup()
+    private void HandleInteraction()
     {
         Ray ray = new Ray(transform.position, transform.forward);
-        if (Physics.Raycast(ray, out RaycastHit hit, reachDistance, pickupMask))
+        if (Physics.Raycast(ray, out RaycastHit hit, reachDistance, interactionMask))
         {
-            if (hit.collider.CompareTag("Grabbable"))
+            // 1. ¿Estamos mirando a la hornalla?
+            StoveController targetStove = hit.collider.GetComponentInParent<StoveController>();
+            if (targetStove != null)
             {
-                Rigidbody rb = hit.collider.attachedRigidbody;
-                if (rb != null)
+                targetStove.InteractWithStove(this);
+                return;
+            }
+
+            // 2. ¿Estamos mirando a la sartén (Grabbable) y no tenemos nada en mano?
+            if (heldRb == null && hit.collider.CompareTag("Grabbable"))
+            {
+                // Condición: solo se puede levantar si la hornalla ya está encendida
+                if (stove != null && !stove.IsLit)
                 {
-                    heldRb = rb;
-                    heldCollider = hit.collider;
-
-                    heldRb.useGravity = false;
-                    heldRb.linearDamping = 10f; // Evita que oscile descontroladamente
-                    heldRb.angularDamping = 10f;
-
-                    // Ignora colisiones temporales contra el CharacterController para no empujar la cámara
-                    CharacterController cc = GetComponentInParent<CharacterController>();
-                    if (cc != null && heldCollider != null)
-                    {
-                        Physics.IgnoreCollision(heldCollider, cc, true);
-                    }
-
-                    PlayVariedSound(pickupClip);
+                    Debug.Log("<color=red>[AVISO] Primero tenés que prender la hornalla.</color>");
+                    return;
                 }
+
+                PickupObject(hit);
+                return;
             }
         }
+
+        // 3. Si tenemos algo en la mano y apretamos 'E' al aire/piso, lo soltamos
+        if (heldRb != null)
+        {
+            Drop();
+        }
+    }
+
+    private void PickupObject(RaycastHit hit)
+    {
+        heldRb = hit.collider.attachedRigidbody;
+        if (heldRb == null) return;
+
+        heldCollider = hit.collider;
+        heldRb.isKinematic = true;
+        heldRb.useGravity = false;
+        heldRb.transform.SetParent(null);
+
+        CharacterController cc = GetComponentInParent<CharacterController>();
+        if (cc != null && heldCollider != null)
+        {
+            Physics.IgnoreCollision(heldCollider, cc, true);
+        }
+
+        PlayAudio(pickupClip);
     }
 
     public void Drop()
     {
         if (heldRb == null) return;
 
+        heldRb.isKinematic = false;
         heldRb.useGravity = true;
-        heldRb.linearDamping = 0.05f;
-        heldRb.angularDamping = 0.05f;
 
         CharacterController cc = GetComponentInParent<CharacterController>();
         if (cc != null && heldCollider != null)
@@ -99,13 +111,24 @@ public class PlayerPickup : MonoBehaviour
             Physics.IgnoreCollision(heldCollider, cc, false);
         }
 
-        PlayVariedSound(dropClip);
+        PlayAudio(dropClip);
 
         heldRb = null;
         heldCollider = null;
     }
 
-    private void PlayVariedSound(AudioClip clip)
+    public void ClearHeldObject()
+    {
+        CharacterController cc = GetComponentInParent<CharacterController>();
+        if (cc != null && heldCollider != null)
+        {
+            Physics.IgnoreCollision(heldCollider, cc, false);
+        }
+        heldRb = null;
+        heldCollider = null;
+    }
+
+    private void PlayAudio(AudioClip clip)
     {
         if (pickupAudioSource == null || clip == null) return;
         pickupAudioSource.pitch = Random.Range(minPitch, maxPitch);
