@@ -9,31 +9,37 @@ public class SimpleCameraController : MonoBehaviour
     public float moveSpeed = 3.5f;
 
     [Header("Sensibilidad del Mouse")]
-    public float mouseSensitivity = 0.15f; // Ajustá este valor a tu gusto
+    public float mouseSensitivity = 0.15f;
+
+    [Header("Referencias Opcionales")]
+    [Tooltip("Si tenés la cámara como hija, asignala acá. Si el script está en la misma cámara, dejalo vacío.")]
+    [SerializeField] private Transform cameraTransform;
 
     [Header("Input Actions")]
     public InputAction moveAction;
     public InputAction lookAction;
 
-    private float rotationX = 0.0f;
-    private float rotationY = 0.0f;
+    private float pitch = 0.0f; // Rotación vertical (cabeza)
+    private float yaw = 0.0f;   // Rotación horizontal (cuerpo)
     private CharacterController characterController;
 
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
+        if (cameraTransform == null)
+        {
+            cameraTransform = transform;
+        }
     }
 
     private void Start()
     {
-        // Bloquea el cursor en el centro de la pantalla para control FPS fluido
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        // Inicializa las rotaciones con los ángulos actuales de la cámara
         Vector3 currentAngles = transform.localEulerAngles;
-        rotationX = currentAngles.x;
-        rotationY = currentAngles.y;
+        yaw = currentAngles.y;
+        pitch = currentAngles.x;
     }
 
     private void OnEnable()
@@ -42,37 +48,42 @@ public class SimpleCameraController : MonoBehaviour
         lookAction.Enable();
     }
 
-    void Update()
+    private void Update()
     {
-        // 1. Mirar con el mouse (Horizontal y Vertical)
+        // 1. Lectura del Mouse
         Vector2 lookInput = lookAction.ReadValue<Vector2>();
 
-        rotationY += lookInput.x * mouseSensitivity; // Giro izquierda / derecha
-        rotationX -= lookInput.y * mouseSensitivity; // Mirar arriba / abajo
-        rotationX = Mathf.Clamp(rotationX, -85f, 85f); // Límite para no dar la vuelta completa
+        yaw += lookInput.x * mouseSensitivity;
+        pitch -= lookInput.y * mouseSensitivity;
+        pitch = Mathf.Clamp(pitch, -80f, 80f); // Límite vertical
 
-        transform.localRotation = Quaternion.Euler(rotationX, rotationY, 0f);
+        // Aplicamos la rotación:
+        // Si la cámara es el mismo objeto, rotamos en su sitio manteniendo el eje vertical puro
+        transform.localRotation = Quaternion.Euler(pitch, yaw, 0f);
 
-        // 2. Movimiento WASD alineado a la vista
+        // 2. Movimiento WASD puro en el plano horizontal XZ
         Vector2 moveInput = moveAction.ReadValue<Vector2>();
 
-        // Direcciones en el plano horizontal (sin volar)
-        Vector3 forward = transform.forward;
-        Vector3 right = transform.right;
-        forward.y = 0f;
-        right.y = 0f;
-        forward.Normalize();
-        right.Normalize();
+        // Usamos solo el ángulo horizontal (yaw) para que mirar al piso no te frene ni te mueva hacia abajo
+        Vector3 forward = Quaternion.Euler(0f, yaw, 0f) * Vector3.forward;
+        Vector3 right = Quaternion.Euler(0f, yaw, 0f) * Vector3.right;
 
         Vector3 moveDirection = (forward * moveInput.y + right * moveInput.x).normalized;
         Vector3 motion = moveDirection * moveSpeed;
 
-        // Gravedad suave para mantener la cámara apoyada en el piso
-        motion.y = -9.81f;
+        // Gravedad adecuada: suave si toca el piso, caída real si está en el aire
+        if (characterController.isGrounded)
+        {
+            motion.y = -2f; // Fuerza mínima constante para mantenerlo pegado al piso
+        }
+        else
+        {
+            motion.y = -9.81f;
+        }
 
         characterController.Move(motion * Time.deltaTime);
 
-        // Escape para liberar el cursor si necesitás tocar algo en el editor
+        // Escape para liberar mouse en el editor
         if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             Cursor.lockState = CursorLockMode.None;
