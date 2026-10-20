@@ -12,6 +12,14 @@ public class Door : MonoBehaviour
     [SerializeField] private float openAngle = 90f;
     [SerializeField] private float duration = 1.0f;
 
+    [Header("Configuración de Audio")]
+    [Tooltip("El componente AudioSource que reproducirá los sonidos")]
+    [SerializeField] private AudioSource doorAudioSource;
+    [Tooltip("Sonido al abrir la puerta")]
+    [SerializeField] private AudioClip openSound;
+    [Tooltip("Sonido al cerrar la puerta")]
+    [SerializeField] private AudioClip closeSound;
+
     private bool isOpen = false;
     private bool isAnimating = false;
     private Coroutine currentDoorCoroutine;
@@ -21,6 +29,19 @@ public class Door : MonoBehaviour
         if (isAnimating) return; // Evita solapar movimientos mientras gira
 
         isOpen = !isOpen;
+
+        // Reproducir el sonido correspondiente
+        if (doorAudioSource != null)
+        {
+            if (isOpen && openSound != null)
+            {
+                doorAudioSource.PlayOneShot(openSound);
+            }
+            else if (!isOpen && closeSound != null)
+            {
+                doorAudioSource.PlayOneShot(closeSound);
+            }
+        }
 
         if (currentDoorCoroutine != null)
         {
@@ -46,6 +67,8 @@ public class Door : MonoBehaviour
             // Curva suave de entrada y salida (equivalente a EaseInOut)
             float smoothT = Mathf.SmoothStep(0f, 1f, t);
             float currentStepAngle = Mathf.Lerp(0f, totalAngle, smoothT);
+
+            // Corrección del salto de línea que había en tu script original
             float delta = currentStepAngle - previousAngle;
             previousAngle = currentStepAngle;
 
