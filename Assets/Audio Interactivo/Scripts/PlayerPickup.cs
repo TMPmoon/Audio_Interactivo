@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -22,8 +23,27 @@ public class PlayerPickup : MonoBehaviour
     [SerializeField] private float minPitch = 0.92f;
     [SerializeField] private float maxPitch = 1.08f;
 
+    [Header("Evento Puerta (Knock)")]
+    [Tooltip("AudioSource ubicado en la puerta de entrada para que suene en 3D")]
+    [SerializeField] private AudioSource doorAudioSource;
+    [Tooltip("Clip del sonido de tocar la puerta (Toc Toc)")]
+    [SerializeField] private AudioClip doorKnockClip;
+    [SerializeField] private float doorKnockDelay = 2.0f;
+
+    [Header("Diálogo Post Toc-Toc (Bloque E - Voz)")]
+    [Tooltip("AudioSource ruteado al grupo Voz del Mixer")]
+    [SerializeField] private AudioSource voiceAudioSource;
+    [Tooltip("Clip donde el personaje reacciona al toc-toc (ej: '¿Quién será?')")]
+    [SerializeField] private AudioClip reactionToKnockClip;
+    [SerializeField] private float voiceDelayAfterKnock = 1.2f;
+
+    [Header("Activador del Trigger de la Puerta")]
+    [Tooltip("El collider que espera al jugador en la puerta")]
+    [SerializeField] private DoorCheckTrigger doorCheckTrigger;
+
     private Rigidbody heldRb;
     private Collider heldCollider;
+    private bool knockTriggered = false;
 
     private void Awake()
     {
@@ -62,15 +82,24 @@ public class PlayerPickup : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, reachDistance, interactionMask))
         {
-            // 1. ¿Mirando a la hornalla?
+            // 1. Hornalla
             StoveController targetStove = hit.collider.GetComponentInParent<StoveController>();
             if (targetStove != null)
             {
+                bool hadPanInHand = (heldRb != null);
+
                 targetStove.InteractWithStove(this);
+
+                // Si colocamos la sartén, arranca la secuencia del toc-toc
+                if (hadPanInHand && targetStove.HasPan && !knockTriggered)
+                {
+                    knockTriggered = true;
+                    StartCoroutine(TriggerDoorKnockSequence());
+                }
                 return;
             }
 
-            // 2. ¿Mirando a la puerta? (Busca el componente en el objeto o en su padre PivotPuerta)
+            // 2. Puerta
             Door door = hit.collider.GetComponentInParent<Door>();
             if (door != null)
             {
@@ -78,7 +107,7 @@ public class PlayerPickup : MonoBehaviour
                 return;
             }
 
-            // 3. ¿Mirando a la sartén?
+            // 3. Sartén
             if (heldRb == null && hit.collider.CompareTag("Grabbable"))
             {
                 if (stove != null && !stove.IsLit)
@@ -92,10 +121,38 @@ public class PlayerPickup : MonoBehaviour
             }
         }
 
-        // 4. Soltar si tenemos algo en la mano
+        // 4. Soltar
         if (heldRb != null)
         {
             Drop();
+        }
+    }
+
+    private IEnumerator TriggerDoorKnockSequence()
+    {
+        yield return new WaitForSeconds(doorKnockDelay);
+
+        // Suena el golpe a la puerta
+        if (doorAudioSource != null && doorKnockClip != null)
+        {
+            doorAudioSource.pitch = Random.Range(0.95f, 1.05f);
+            doorAudioSource.PlayOneShot(doorKnockClip);
+            Debug.Log("<color=yellow>[PUERTA] Alguien tocó la puerta de entrada...</color>");
+        }
+
+        // Habilita el collider de la puerta para que reaccione al ir
+        if (doorCheckTrigger != null)
+        {
+            doorCheckTrigger.EnableTrigger();
+        }
+
+        // Pausa breve y entra el diálogo del personaje
+        yield return new WaitForSeconds(voiceDelayAfterKnock);
+
+        if (voiceAudioSource != null && reactionToKnockClip != null)
+        {
+            voiceAudioSource.PlayOneShot(reactionToKnockClip);
+            Debug.Log("<color=cyan>[VOZ] Diálogo al escuchar la puerta ('¿Quién será?').</color>");
         }
     }
 
