@@ -314,7 +314,8 @@ AudioSource:
   m_GameObject: {fileID: 42624731}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -2593459813744163418, guid: 215aa340f55c9624db93edb9edc83e0e,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 603a1c8f74409a64d899f6ba2542dcd4, type: 3}
   m_PlayOnAwake: 1
@@ -1726,21 +1727,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &1181151160
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1181151150}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7eba24e056af12b4a949da8f1731bda5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DynamicMusicTransition
-  calmMusic: {fileID: 42624733}
-  tenseMusic: {fileID: 1775272031}
-  fadeDuration: 2
 --- !u!1 &1382659438
 GameObject:
   m_ObjectHideFlags: 0
@@ -2044,7 +2030,7 @@ PrefabInstance:
     - target: {fileID: 2542947572197010399, guid: 625a16b402cfd487494f48992994e27e,
         type: 3}
       propertyPath: m_Size.z
-      value: 0.7586408
+      value: 0.1439613
       objectReference: {fileID: 0}
     - target: {fileID: 2542947572197010399, guid: 625a16b402cfd487494f48992994e27e,
         type: 3}
@@ -2059,7 +2045,7 @@ PrefabInstance:
     - target: {fileID: 2542947572197010399, guid: 625a16b402cfd487494f48992994e27e,
         type: 3}
       propertyPath: m_Center.z
-      value: -0.37931392
+      value: -0.071969226
       objectReference: {fileID: 0}
     - target: {fileID: 2542947572197010399, guid: 625a16b402cfd487494f48992994e27e,
         type: 3}
@@ -2239,10 +2225,6 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1181151155}
-    - targetCorrespondingSourceObject: {fileID: 1554601738652106576, guid: 625a16b402cfd487494f48992994e27e,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1181151160}
   m_SourcePrefab: {fileID: 100100000, guid: 625a16b402cfd487494f48992994e27e, type: 3}
 --- !u!1 &1487665390
 GameObject:
@@ -2575,10 +2557,11 @@ AudioSource:
   m_GameObject: {fileID: 1775272030}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 6203292695588711232, guid: 215aa340f55c9624db93edb9edc83e0e,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: e1d4ec0021f9a684bada4f56e09df7e7, type: 3}
-  m_PlayOnAwake: 0
+  m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
   Loop: 1
@@ -2970,6 +2953,7 @@ GameObject:
   - component: {fileID: 1873658443}
   - component: {fileID: 1873658442}
   - component: {fileID: 1873658447}
+  - component: {fileID: 1873658448}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -3249,6 +3233,22 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1873658448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1873658441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b94c1456457a7ea40ac3b08604ca1230, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SnapshotTransition
+  tensionSnapshot: {fileID: -5904076992173646250, guid: 215aa340f55c9624db93edb9edc83e0e,
+    type: 2}
+  objetoFuego: {fileID: 1497022467}
+  transitionTime: 2
 --- !u!1 &1897393578 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 148710183475755766, guid: 74ab8f72987454f0db40e7903d894991,
