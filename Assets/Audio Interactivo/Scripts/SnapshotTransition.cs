@@ -7,7 +7,7 @@ public class SnapshotTransition : MonoBehaviour
     public AudioMixerSnapshot tensionSnapshot;
 
     [Header("Condición")]
-    public GameObject objetoFuego; // Arrastrá el fuego acá
+    public GameObject objetoFuego; 
 
     [Header("Parámetros")]
     public float transitionTime = 2.0f;
@@ -15,10 +15,10 @@ public class SnapshotTransition : MonoBehaviour
 
     private void Update()
     {
-        // Si ya se disparó la música, no hace nada más
+        
         if (hasTriggered) return;
 
-        // Comprueba si el fuego existe y se activó en la escena
+        
         if (objetoFuego != null && objetoFuego.activeInHierarchy)
         {
             hasTriggered = true;
